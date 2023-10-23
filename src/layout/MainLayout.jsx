@@ -1,5 +1,5 @@
 import React from "react";
-import MenuSideBar from "../pages/MenuSideBar";
+import MenuSideBar from "../components/MenuSideBar";
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase";

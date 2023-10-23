@@ -1,54 +1,55 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState } from "react";
+import { Timestamp, doc, setDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { collection, addDoc } from "firebase/firestore";
-import { auth, db } from "../firebase";
-import { Link, Navigate } from "react-router-dom";
-import { useAuthState } from "react-firebase-hooks/auth";
+import { auth, db, storage } from "../firebase";
+import { Link } from "react-router-dom";
+import { GrGallery } from "react-icons/gr";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 const SignUp = () => {
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [user, isLoading] = useAuthState(auth);
+  const [file, setFile] = useState("");
 
-  const handleSubmit = useCallback(
-    (e) => {
-      e.preventDefault();
-      if (!email || !password) {
-        return;
-      }
-      createUserWithEmailAndPassword(auth, email, password)
-        .then((auth) => {
-          updateProfile(auth.user, { displayName: name });
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
-    [name, email, password]
-  );
-  useEffect(() => {
+  console.log(file);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      addDoc(collection(db, "users"), {
-        userID: user.uid,
-        userName: name,
-        userSurname: surname,
-        userEmail: email,
-        userPassword: password,
-        userProfileUrl:
-          "https://pbs.twimg.com/profile_images/1625900236882292746/OZkLMC0G_400x400.jpg",
-        userStatus: true,
-        userCreatedDate: new Date(),
-      });
-      console.log("first");
-    } catch (e) {
-      console.log("Error adding document: ", e);
-    }
-  }, [user]);
+      const res = await createUserWithEmailAndPassword(auth, email, password);
 
-  if (user) {
-    return <Navigate to="/" replace />;
-  }
+      const storageRef = ref(storage, name);
+
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      uploadTask.on(
+        (error) => {
+          console.log(error.message);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+            await updateProfile(res.user, {
+              displayName: name,
+              photoURL: downloadURL,
+            });
+            await setDoc(doc(db, "users", res.user.uid), {
+              userID: res.user.uid,
+              userName: name,
+              userSurname: surname,
+              userStatus: true,
+              userCreatedDate: Timestamp.fromDate(new Date()),
+              userEmail: email,
+              userPhotoURL: downloadURL,
+            });
+          });
+        }
+      );
+    } catch (error) {
+      console.log(error.message);
+      console.log("hata");
+    }
+  };
+
   return (
     <div className="bg-[#010019] w-full h-screen flex">
       <div className="bg-[#EEEEEE] w-[1200px] h-[700px] m-auto rounded-2xl p-7 flex gap-1">
@@ -87,6 +88,21 @@ const SignUp = () => {
               value={password}
               onChange={(e) => setPassword(e.currentTarget.value)}
             />
+            <input
+              type="file"
+              id="file"
+              className="hidden"
+              onChange={(e) => setFile(e.currentTarget.files[0])}
+            />
+            <label
+              htmlFor="file"
+              className="flex px-5 gap-5 items-center text-gray-600 font-semibold"
+            >
+              <span className="text-2xl text-red-400">
+                <GrGallery />
+              </span>
+              <span>Add a profile picture</span>
+            </label>
             <input
               type="submit"
               className="p-4 bg-[#FF4A09] text-white rounded-md"
