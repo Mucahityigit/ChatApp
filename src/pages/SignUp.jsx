@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Timestamp, doc, setDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth, db, storage } from "../firebase";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { GrGallery } from "react-icons/gr";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 const SignUp = () => {
@@ -11,8 +11,8 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [file, setFile] = useState("");
+  const navigate = useNavigate();
 
-  console.log(file);
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -41,6 +41,8 @@ const SignUp = () => {
               userEmail: email,
               userPhotoURL: downloadURL,
             });
+            await setDoc(doc(db, "userChat", res.user.uid), {});
+            navigate("/");
           });
         }
       );

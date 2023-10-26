@@ -1,26 +1,31 @@
-import React, { useState, useCallback } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import React, { useState, useEffect } from "react";
+import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 import { Link, Navigate } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { useDispatch } from "react-redux";
+import { getUser } from "../redux/userSlice";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [user, isLoading] = useAuthState(auth);
+  const dispatch = useDispatch();
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!email || !password) {
+      return;
+    }
+    signInWithEmailAndPassword(auth, email, password).catch((error) => {
+      console.log(error);
+    });
+  };
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      dispatch(getUser(user));
+    });
+  }, [auth]);
 
-  const handleSubmit = useCallback(
-    (e) => {
-      e.preventDefault();
-      if (!email || !password) {
-        return;
-      }
-      signInWithEmailAndPassword(auth, email, password).catch((error) => {
-        console.log(error);
-      });
-    },
-    [email, password]
-  );
   if (isLoading) {
     <div>Loading...</div>;
   }

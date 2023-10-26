@@ -1,8 +1,11 @@
 import React from "react";
 import { BsCameraVideo } from "react-icons/bs";
 import { FiPhoneCall, FiSearch } from "react-icons/fi";
+import { useSelector } from "react-redux";
 
 const ChattingNavBar = () => {
+  const { currentUser } = useSelector((state) => state.currentUser);
+
   return (
     <div className="bg-[#F6F6F6] shadow-sm h-[72px] rounded-2xl cursor-default">
       <div className=" px-5 pt-3.5">
@@ -10,13 +13,15 @@ const ChattingNavBar = () => {
           <div className="profil flex flex-1 gap-3 items-center ">
             <div className=" profilHover relative w-[45px h-[45px] rounded-full overflow-hidden">
               <img
-                src="https://pbs.twimg.com/profile_images/1625900236882292746/OZkLMC0G_400x400.jpg"
+                src={currentUser.photoURL}
                 alt=""
                 className="w-full h-full"
               />
             </div>
             <div className="flex flex-col">
-              <div className="font-bold text-md text-[13px]">User Name</div>
+              <div className="font-bold text-md text-[13px]">
+                {currentUser.displayName}
+              </div>
               <div className="text-[13px] text-black/50 font-semibold">
                 Online
               </div>
