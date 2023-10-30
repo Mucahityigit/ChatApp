@@ -41,7 +41,7 @@ const SignUp = () => {
               userEmail: email,
               userPhotoURL: downloadURL,
             });
-            await setDoc(doc(db, "userChat", res.user.uid), {});
+            await setDoc(doc(db, "userChats", res.user.uid), {});
             navigate("/");
           });
         }

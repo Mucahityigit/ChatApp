@@ -2,16 +2,15 @@ import React, { useEffect, useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { FiSearch } from "react-icons/fi";
 import { useSelector } from "react-redux";
+import { Users } from "../utils/Users";
 import {
   collection,
   doc,
   getDoc,
   getDocs,
-  query,
   serverTimestamp,
   setDoc,
   updateDoc,
-  where,
 } from "firebase/firestore";
 import { db } from "../firebase";
 
@@ -58,13 +57,11 @@ const SearchBar = () => {
       currentUser.uid > user.userID
         ? currentUser.uid + user.userID
         : user.userID + currentUser.uid;
-
     try {
       const res = await getDoc(doc(db, "chats", combinedId));
       if (!res.exists()) {
         // create a chat in chats collection
         await setDoc(doc(db, "chats", combinedId), { messages: [] });
-        console.log(currentUser.uid);
         //create user chats
         await updateDoc(doc(db, "userChats", currentUser.uid), {
           [combinedId + ".userInfo"]: {
@@ -83,8 +80,12 @@ const SearchBar = () => {
           [combinedId + ".date"]: serverTimestamp(),
         });
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
     //create user chats
+    setUsersFilter(null);
+    setUsername("");
   };
 
   return (
@@ -97,6 +98,7 @@ const SearchBar = () => {
           type="text"
           placeholder="Search"
           className="outline-none border rounded-3xl py-2 px-3 flex-1 placeholder:text-[13px]"
+          value={username}
           onChange={(e) => setUsername(e.target.value)}
           onKeyUp={handleSearch}
         />

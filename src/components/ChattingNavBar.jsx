@@ -5,25 +5,22 @@ import { useSelector } from "react-redux";
 
 const ChattingNavBar = () => {
   const { currentUser } = useSelector((state) => state.currentUser);
+  const { user } = useSelector((state) => state.chatUser);
 
   return (
     <div className="bg-[#F6F6F6] shadow-sm h-[72px] rounded-2xl cursor-default">
       <div className=" px-5 pt-3.5">
         <div className="flex gap-1 justify-between items-center">
           <div className="profil flex flex-1 gap-3 items-center ">
-            <div className=" profilHover relative w-[45px h-[45px] rounded-full overflow-hidden">
-              <img
-                src={currentUser.photoURL}
-                alt=""
-                className="w-full h-full"
-              />
+            <div className=" profilHover relative w-[40px] h-[40px] rounded-full overflow-hidden">
+              <img src={user.userPhotoURL} alt="" className="w-full h-full" />
             </div>
             <div className="flex flex-col">
               <div className="font-bold text-md text-[13px]">
-                {currentUser.displayName}
+                {user.userName + " " + user.userSurname}
               </div>
               <div className="text-[13px] text-black/50 font-semibold">
-                Online
+                {user.userStatus ? "Online" : null}
               </div>
             </div>
           </div>
