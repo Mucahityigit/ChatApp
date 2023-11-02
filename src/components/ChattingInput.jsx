@@ -95,7 +95,7 @@ const ChattingInput = () => {
           />
         </div>
         <div className="w-[45px] h-[45px] flex justify-center items-center hover:bg-[#eeeeee] rounded-xl">
-          {text ? (
+          {text || img ? (
             <BiSend onClick={handleSend} className="text-[#FF4A09]" />
           ) : (
             <BiMicrophone />

@@ -10,6 +10,7 @@ const Persons = () => {
   const [userChatsInfo, setUserChatsInfo] = useState([]);
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.currentUser);
+  const userDatas = [];
   useEffect(() => {
     const getChats = () => {
       const unsub = onSnapshot(doc(db, "userChats", currentUser.uid), (doc) => {
@@ -31,7 +32,6 @@ const Persons = () => {
         userID.push(chat[1].userInfo.uid);
       });
 
-      const userDatas = [];
       userID.forEach(async (id) => {
         const docRef = doc(db, "users", id);
         const docSnap = await getDoc(docRef);
@@ -40,7 +40,7 @@ const Persons = () => {
       });
     };
     userData();
-  }, [chats]);
+  }, [userDatas]);
 
   const handleSelect = (chat) => {
     dispatch(getChatId(chat.userID));

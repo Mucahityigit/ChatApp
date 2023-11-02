@@ -28,9 +28,6 @@ const MenuSideBar = () => {
         <Link to="/notifications" className="focus:text-[#FF4A09]">
           <MdNotificationsNone />
         </Link>
-        <Link className="focus:text-[#FF4A09]">
-          <BiTrash />
-        </Link>
         <button onClick={handleSignOut} className="focus:text-[#FF4A09]">
           <FiLogOut />
         </button>

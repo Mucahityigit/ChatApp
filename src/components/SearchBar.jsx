@@ -39,7 +39,7 @@ const SearchBar = () => {
       const getUsersFilter = users.filter((dt) => {
         if (
           username &&
-          dt.userName.toLowerCase().includes(username.toLocaleLowerCase())
+          dt.userName.toLowerCase().includes(username.toLowerCase())
         ) {
           return dt;
         }
@@ -75,7 +75,7 @@ const SearchBar = () => {
           [combinedId + ".userInfo"]: {
             uid: currentUser.uid,
             displayName: currentUser.displayName,
-            photoURL: currentUser.PhotoURL,
+            photoURL: currentUser.photoURL,
           },
           [combinedId + ".date"]: serverTimestamp(),
         });
