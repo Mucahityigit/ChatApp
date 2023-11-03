@@ -92,6 +92,7 @@ const ChattingInput = () => {
             placeholder="Type something..."
             value={text}
             onChange={(e) => setText(e.target.value)}
+            onKeyUp={(e) => e.key === "Enter" && handleSend()}
           />
         </div>
         <div className="w-[45px] h-[45px] flex justify-center items-center hover:bg-[#eeeeee] rounded-xl">
