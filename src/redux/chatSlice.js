@@ -5,6 +5,7 @@ import { auth } from "../firebase";
 const initialState = {
   user: {},
   chatId: "null",
+  messageDate: "null",
 };
 let currentUser;
 
@@ -25,9 +26,12 @@ export const chatSlice = createSlice({
           ? currentUser + action.payload
           : action.payload + currentUser;
     },
+    getMessageDate: (state, action) => {
+      state.messageDate = action.payload;
+    },
   },
 });
 // Action creators are generated for each case reducer function
-export const { getChatUser, getChatId } = chatSlice.actions;
+export const { getChatUser, getChatId, getMessageDate } = chatSlice.actions;
 
 export default chatSlice.reducer;

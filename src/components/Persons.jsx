@@ -56,6 +56,16 @@ const Persons = () => {
         const userChat = Object.entries(chats).find(
           (c) => c[1].userInfo.uid === chat.userID
         );
+        let dateHour = new Date(userChat[1].date * 1000).getHours();
+        let dateMinute = new Date(userChat[1]?.date * 1000).getMinutes();
+
+        if (dateHour < 10) {
+          dateHour = "0" + dateHour;
+        }
+        if (dateMinute < 10) {
+          dateMinute = "0" + dateMinute;
+        }
+
         return (
           <div key={chat.userID} onClick={() => handleSelect(chat)}>
             <PersonComp
@@ -63,7 +73,7 @@ const Persons = () => {
               surname={chat.userSurname}
               imgUrl={chat.userPhotoURL}
               lastMessage={userChat ? userChat[1].lastMessage?.text : ""}
-              date={"27/10/2023"}
+              date={dateHour + ":" + dateMinute}
               status={chat.userStatus}
               notifications={0}
             />

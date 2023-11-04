@@ -2,7 +2,7 @@ import React from "react";
 import { BsCameraVideo } from "react-icons/bs";
 import { FiPhoneCall, FiSearch } from "react-icons/fi";
 import { useSelector } from "react-redux";
-
+import defaultImg from "../assets/Default_pfp.png";
 const ChattingNavBar = () => {
   const { currentUser } = useSelector((state) => state.currentUser);
   const { user } = useSelector((state) => state.chatUser);
@@ -13,7 +13,11 @@ const ChattingNavBar = () => {
         <div className="flex gap-1 justify-between items-center">
           <div className="profil flex flex-1 gap-3 items-center ">
             <div className=" profilHover relative w-[40px] h-[40px] rounded-full overflow-hidden">
-              <img src={user.userPhotoURL} alt="" className="w-full h-full" />
+              <img
+                src={user.userPhotoURL ? user.userPhotoURL : defaultImg}
+                alt=""
+                className="w-full h-full"
+              />
             </div>
             <div className="flex flex-col">
               <div className="font-bold text-md text-[13px]">

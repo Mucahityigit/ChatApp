@@ -1,4 +1,5 @@
 import React from "react";
+import defaultImg from "../assets/Default_pfp.png";
 
 const PersonComp = ({
   name,
@@ -14,7 +15,11 @@ const PersonComp = ({
       <div className=" px-5 cursor-default hover:bg-[#E9E9E9] focus:bg-[#E9E9E9] flex flex-col justify-between">
         <div className="flex gap-3 justify-between items-center py-3">
           <div className="flex w-[43px] h-[43px] rounded-full overflow-hidden">
-            <img src={imgUrl} alt="" className="w-full h-full" />
+            <img
+              src={imgUrl ? imgUrl : defaultImg}
+              alt=""
+              className="w-full h-full"
+            />
           </div>
           <div className="flex flex-col flex-1">
             <div className="font-bold text-md text-[13px]">

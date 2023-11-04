@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { FiSearch } from "react-icons/fi";
 import { useSelector } from "react-redux";
-import { Users } from "../utils/Users";
+import defaultImg from "../assets/Default_pfp.png";
+
 import {
   collection,
   doc,
@@ -63,22 +64,39 @@ const SearchBar = () => {
         // create a chat in chats collection
         await setDoc(doc(db, "chats", combinedId), { messages: [] });
         //create user chats
-        await updateDoc(doc(db, "userChats", currentUser.uid), {
-          [combinedId + ".userInfo"]: {
-            uid: user.userID,
-            displayName: user.userName,
-            photoURL: user.userPhotoURL,
-          },
-          [combinedId + ".date"]: serverTimestamp(),
-        });
-        await updateDoc(doc(db, "userChats", user.userID), {
-          [combinedId + ".userInfo"]: {
-            uid: currentUser.uid,
-            displayName: currentUser.displayName,
-            photoURL: currentUser.photoURL,
-          },
-          [combinedId + ".date"]: serverTimestamp(),
-        });
+        if (user.userPhotoURL) {
+          await updateDoc(doc(db, "userChats", currentUser.uid), {
+            [combinedId + ".userInfo"]: {
+              uid: user.userID,
+              displayName: user.userName,
+              photoURL: user.userPhotoURL,
+            },
+            [combinedId + ".date"]: serverTimestamp(),
+          });
+          await updateDoc(doc(db, "userChats", user.userID), {
+            [combinedId + ".userInfo"]: {
+              uid: currentUser.uid,
+              displayName: currentUser.displayName,
+              photoURL: currentUser.photoURL,
+            },
+            [combinedId + ".date"]: serverTimestamp(),
+          });
+        } else {
+          await updateDoc(doc(db, "userChats", currentUser.uid), {
+            [combinedId + ".userInfo"]: {
+              uid: user.userID,
+              displayName: user.userName,
+            },
+            [combinedId + ".date"]: serverTimestamp(),
+          });
+          await updateDoc(doc(db, "userChats", user.userID), {
+            [combinedId + ".userInfo"]: {
+              uid: currentUser.uid,
+              displayName: currentUser.displayName,
+            },
+            [combinedId + ".date"]: serverTimestamp(),
+          });
+        }
       }
     } catch (error) {
       console.log(error);
@@ -123,7 +141,7 @@ const SearchBar = () => {
               <div className="flex gap-3 justify-between items-center py-3">
                 <div className="flex w-[43px] h-[43px] rounded-full overflow-hidden">
                   <img
-                    src={user.userPhotoURL}
+                    src={user.userPhotoURL ? user.userPhotoURL : defaultImg}
                     alt=""
                     className="w-full h-full"
                   />

@@ -5,6 +5,7 @@ import webDesign from "../assets/webdesign.jpg";
 
 const Home = () => {
   const { currentUser } = useSelector((state) => state.currentUser);
+  console.log(currentUser);
 
   return (
     <div className="flex flex-col items-center w-full h-full">

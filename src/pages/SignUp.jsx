@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Timestamp, doc, setDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth, db, storage } from "../firebase";
@@ -18,37 +18,52 @@ const SignUp = () => {
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
 
-      const storageRef = ref(storage, name);
-
-      const uploadTask = uploadBytesResumable(storageRef, file);
-
-      uploadTask.on(
-        (error) => {
-          console.log(error.message);
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-            await updateProfile(res.user, {
-              displayName: name,
-              photoURL: downloadURL,
-            });
-            await setDoc(doc(db, "users", res.user.uid), {
-              userID: res.user.uid,
-              userName: name,
-              userSurname: surname,
-              userStatus: true,
-              userCreatedDate: Timestamp.fromDate(new Date()),
-              userEmail: email,
-              userPhotoURL: downloadURL,
-            });
-            await setDoc(doc(db, "userChats", res.user.uid), {});
-            navigate("/");
-          });
-        }
-      );
+      if (file) {
+        const storageRef = ref(storage, name);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+        uploadTask.on(
+          (error) => {
+            console.log(error.message);
+          },
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then(
+              async (downloadURL) => {
+                await updateProfile(res.user, {
+                  displayName: name,
+                  photoURL: downloadURL,
+                });
+                await setDoc(doc(db, "users", res.user.uid), {
+                  userID: res.user.uid,
+                  userName: name,
+                  userSurname: surname,
+                  userStatus: true,
+                  userCreatedDate: Timestamp.now(),
+                  userEmail: email,
+                  userPhotoURL: downloadURL,
+                });
+                await setDoc(doc(db, "userChats", res.user.uid), {});
+                navigate("/");
+              }
+            );
+          }
+        );
+      } else {
+        await updateProfile(res.user, {
+          displayName: name,
+        });
+        await setDoc(doc(db, "users", res.user.uid), {
+          userID: res.user.uid,
+          userName: name,
+          userSurname: surname,
+          userStatus: true,
+          userCreatedDate: Timestamp.now(),
+          userEmail: email,
+        });
+        await setDoc(doc(db, "userChats", res.user.uid), {});
+        navigate("/");
+      }
     } catch (error) {
       console.log(error.message);
-      console.log("hata");
     }
   };
 
@@ -93,6 +108,7 @@ const SignUp = () => {
             <input
               type="file"
               id="file"
+              accept="image/"
               className="hidden"
               onChange={(e) => setFile(e.currentTarget.files[0])}
             />

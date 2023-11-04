@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import classNames from "classnames";
+import { getMessageDate } from "../redux/chatSlice";
+import defaultImg from "../assets/Default_pfp.png";
 
 const Message = ({ message }) => {
   const { currentUser } = useSelector((state) => state.currentUser);
@@ -9,6 +11,16 @@ const Message = ({ message }) => {
   useEffect(() => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
   }, [message]);
+
+  let dateHour = new Date(message.date.seconds * 1000).getHours();
+  let dateMinute = new Date(message.date.seconds * 1000).getMinutes();
+  if (dateHour < 10) {
+    dateHour = "0" + dateHour;
+  }
+  if (dateMinute < 10) {
+    dateMinute = "0" + dateMinute;
+  }
+
   return (
     <div
       ref={ref}
@@ -22,7 +34,11 @@ const Message = ({ message }) => {
           src={
             message?.senderId === currentUser.uid
               ? currentUser.photoURL
+                ? currentUser.photoURL
+                : defaultImg
               : user.userPhotoURL
+              ? user.userPhotoURL
+              : defaultImg
           }
           alt=""
         />
@@ -43,7 +59,9 @@ const Message = ({ message }) => {
           )}
         >
           <p>{message?.text}</p>
-          <span className="text-[11px] text-white/50">just now</span>
+          <span className="text-[11px] text-white/50">
+            {dateHour + ":" + dateMinute}
+          </span>
         </div>
         {message?.img && (
           <img className="w-[50%] rounded-md" src={message.img} alt="" />
